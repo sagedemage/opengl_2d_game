@@ -8,9 +8,9 @@ constexpr unsigned int WINDOW_WIDTH = 640;
 constexpr unsigned int WINDOW_HEIGHT = 640;
 
 bool GetShaderCode(const char *shader_file_path, std::string *shader_source);
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mode);
-void player_boundaries();
+void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
+                 int mode);
+void PlayerBoundaries();
 
 int x = 0;
 int y = 0;
@@ -70,7 +70,7 @@ int main(void) {
                   << std::endl;
     }
 
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, KeyCallback);
 
     /* Build and compile the Shader */
     // vertex shader
@@ -182,7 +182,7 @@ int main(void) {
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glViewport(x, y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        player_boundaries();
+        PlayerBoundaries();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -231,12 +231,14 @@ bool GetShaderCode(const char *shader_file_path, std::string *shader_source) {
     return true;
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mode) {
+void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
+                 int mode) {
     // when a user presses the escape key, we set the WindowShouldClose property
     // to true, closing the application
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+
     if (key >= 0 && key < 1024) {
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             x -= 10;
@@ -253,7 +255,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
     }
 }
 
-void player_boundaries() {
+void PlayerBoundaries() {
     /* Player boundaries */
     // left boundary
     if (x < -290) {
