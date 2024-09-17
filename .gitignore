@@ -1,0 +1,17 @@
+build/
+.vscode/
+.kdev4/
+*.kdev4
+files/
+*.xcf
+*.png
+
+# Music files
+*.aup3
+*.mscz
+
+# Cache files
+.mscbackup
+~*.*
+*.kate-swp
+.cache/
