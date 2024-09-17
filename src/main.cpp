@@ -7,15 +7,21 @@
 constexpr unsigned int WINDOW_WIDTH = 640;
 constexpr unsigned int WINDOW_HEIGHT = 640;
 
+typedef struct Coord {
+    int x;
+    int y;
+} Coord;
+
 bool GetShaderCode(const char *shader_file_path, std::string *shader_source);
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
-                 int mode);
-void PlayerBoundaries();
-
-int x = 0;
-int y = 0;
+                 int mods);
+void PlayerBoundaries(Coord *coord);
 
 int main(void) {
+    Coord coord;
+    coord.x = 0;
+    coord.y = 0;
+
     /* Shader File Path */
     const char *vertex_shader_path = "shader/shader.vert";
     const char *fragment_shader_path = "shader/shader.frag";
@@ -71,6 +77,8 @@ int main(void) {
     }
 
     glfwSetKeyCallback(window, KeyCallback);
+
+    glfwSetWindowUserPointer(window, &coord);
 
     /* Build and compile the Shader */
     // vertex shader
@@ -181,8 +189,10 @@ int main(void) {
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        glViewport(x, y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        PlayerBoundaries();
+        Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
+
+        glViewport(coord->x, coord->y, WINDOW_WIDTH, WINDOW_HEIGHT);
+        PlayerBoundaries(coord);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -232,45 +242,49 @@ bool GetShaderCode(const char *shader_file_path, std::string *shader_source) {
 }
 
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
-                 int mode) {
+                 int mods) {
     // when a user presses the escape key, we set the WindowShouldClose property
     // to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 
+    Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
+
     if (key >= 0 && key < 1024) {
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            x -= 10;
+            coord->x -= 10;
         } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            x += 10;
+            coord->x += 10;
         } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            y += 10;
+            coord->y += 10;
         } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            y -= 10;
+            coord->y -= 10;
         }
         if (action == GLFW_PRESS) {
         } else if (action == GLFW_RELEASE) {
         }
     }
+
+    glfwSetWindowUserPointer(window, coord);
 }
 
-void PlayerBoundaries() {
+void PlayerBoundaries(Coord *coord) {
     /* Player boundaries */
     // left boundary
-    if (x < -290) {
-        x += 10;
+    if (coord->x < -290) {
+        coord->x += 10;
     }
     // right boundary
-    if (x > 290) {
-        x -= 10;
+    if (coord->x > 290) {
+        coord->x -= 10;
     }
     // bottom boundary
-    if (y < -290) {
-        y += 10;
+    if (coord->y < -290) {
+        coord->y += 10;
     }
     // top boundary
-    if (y > 290) {
-        y -= 10;
+    if (coord->y > 290) {
+        coord->y -= 10;
     }
 }
