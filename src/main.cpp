@@ -17,6 +17,8 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
                  int mods);
 void PlayerBoundaries(Coord *coord);
 
+constexpr int PLAYER_SPEED = 5;
+
 int main(void) {
     Coord coord;
     coord.x = 0;
@@ -54,6 +56,12 @@ int main(void) {
     }
 
     glfwWindowHint(GLFW_RESIZABLE, false);
+
+    // Set the refresh rate to 60 frames per second
+    glfwWindowHint(GLFW_REFRESH_RATE, 60);
+
+    // Enable VSync
+    glfwSwapInterval(1);
 
     // Create GLFW Window
     GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -251,19 +259,21 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
 
     Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
 
-    if (key >= 0 && key < 1024) {
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            coord->x -= 10;
-        } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            coord->x += 10;
-        } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            coord->y += 10;
-        } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            coord->y -= 10;
-        }
-        if (action == GLFW_PRESS) {
-        } else if (action == GLFW_RELEASE) {
-        }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        // move the player left
+        coord->x -= PLAYER_SPEED;
+    } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        // move the player right
+        coord->x += PLAYER_SPEED;
+    } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        // move the player up
+        coord->y += PLAYER_SPEED;
+    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        // move the player down
+        coord->y -= PLAYER_SPEED;
+    }
+    if (action == GLFW_PRESS) {
+    } else if (action == GLFW_RELEASE) {
     }
 
     glfwSetWindowUserPointer(window, coord);
@@ -271,20 +281,20 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
 
 void PlayerBoundaries(Coord *coord) {
     /* Player boundaries */
-    // left boundary
     if (coord->x < -290) {
-        coord->x += 10;
+        // left boundary
+        coord->x += PLAYER_SPEED;
     }
-    // right boundary
     if (coord->x > 290) {
-        coord->x -= 10;
+        // right boundary
+        coord->x -= PLAYER_SPEED;
     }
-    // bottom boundary
     if (coord->y < -290) {
-        coord->y += 10;
+        // bottom boundary
+        coord->y += PLAYER_SPEED;
     }
-    // top boundary
     if (coord->y > 290) {
-        coord->y -= 10;
+        // top boundary
+        coord->y -= PLAYER_SPEED;
     }
 }
