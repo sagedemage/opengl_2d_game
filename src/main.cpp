@@ -260,12 +260,16 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
     Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        // move the player left
         coord->x -= PLAYER_SPEED;
     } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        // move the player right
         coord->x += PLAYER_SPEED;
     } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        // move the player up
         coord->y += PLAYER_SPEED;
     } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        // move the player down
         coord->y -= PLAYER_SPEED;
     }
     if (action == GLFW_PRESS) {
@@ -277,20 +281,20 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
 
 void PlayerBoundaries(Coord *coord) {
     /* Player boundaries */
-    // left boundary
     if (coord->x < -290) {
+        // left boundary
         coord->x += PLAYER_SPEED;
     }
-    // right boundary
     if (coord->x > 290) {
+        // right boundary
         coord->x -= PLAYER_SPEED;
     }
-    // bottom boundary
     if (coord->y < -290) {
+        // bottom boundary
         coord->y += PLAYER_SPEED;
     }
-    // top boundary
     if (coord->y > 290) {
+        // top boundary
         coord->y -= PLAYER_SPEED;
     }
 }
