@@ -207,9 +207,12 @@ int main(void) {
             trans = glm::translate(trans, glm::vec3(0.0F, -PLAYER_SPEED, 0.0F));
         }
 
+        // Get the vector coordinates of the player after a transformation
+        // matrix
         glm::vec4 vec = trans * ori_vec;
         PlayerBoundaries(vec, &trans);
 
+        // Pass the transformation matrix to the shader
         GLint transform_loc = glGetUniformLocation(shader_program, "transform");
         glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
 
