@@ -192,6 +192,7 @@ int main(void) {
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
+        /* Player keybindings */
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             // move the player left
             trans = glm::translate(trans, glm::vec3(-PLAYER_SPEED, 0.0F, 0.0F));
