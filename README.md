@@ -55,5 +55,6 @@ sudo apt install clang-tidy
 ## Useful Resources
 - [learnopengl](https://learnopengl.com/)
   - [Hello Triangle](https://learnopengl.com/Getting-started/Hello-Triangle)
+  - [Transformations](https://learnopengl.com/Getting-started/Transformations)
   - [2D Game - Setting up](https://learnopengl.com/In-Practice/2D-Game/Setting-up)
 - [clang-tidy documentation](https://clang.llvm.org/extra/clang-tidy/)
