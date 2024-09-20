@@ -1,29 +1,26 @@
 #include <array>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 #include "audio/audio.hpp"
 
+// Window Size
 constexpr unsigned int WINDOW_WIDTH = 640;
 constexpr unsigned int WINDOW_HEIGHT = 640;
-
-typedef struct Coord {
-    int x;
-    int y;
-} Coord;
+// Matrix Size
+constexpr float IDENTITY_MATRIX = 750.0F;
+// Player Speed
+constexpr float PLAYER_SPEED = 0.005F;
 
 bool GetShaderCode(const char *shader_file_path, std::string *shader_source);
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
                  int mods);
-void PlayerBoundaries(Coord *coord);
-
-constexpr int PLAYER_SPEED = 5;
+void PlayerBoundaries(glm::vec4 vec, glm::mat4 *trans);
 
 int main(void) {
-    Coord coord;
-    coord.x = 0;
-    coord.y = 0;
-
     /* Shader File Path */
     const char *vertex_shader_path = "shader/shader.vert";
     const char *fragment_shader_path = "shader/shader.frag";
@@ -86,8 +83,6 @@ int main(void) {
 
     glfwSetKeyCallback(window, KeyCallback);
 
-    glfwSetWindowUserPointer(window, &coord);
-
     /* Build and compile the Shader */
     // vertex shader
     unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -148,8 +143,6 @@ int main(void) {
         -0.1F, -0.1F, 0.0F, 1.0F, 0.0F, 1.0F,  // top
     };
 
-    // glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
     unsigned int vbo = 0;
     unsigned int vao = 0;
     glGenVertexArrays(1, &vao);
@@ -185,9 +178,11 @@ int main(void) {
 
     Audio::ChangeVolume(music_volume);*/
 
+    glm::vec4 ori_vec(0.0F, 0.0F, 0.0F, 1.0F);
+    glm::mat4 trans = glm::mat4(IDENTITY_MATRIX);
+
     while (!glfwWindowShouldClose(window)) {
         /* Game loop */
-
         /* Render here */
         glClearColor(0.0F, 0.725F, 0.098F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -197,10 +192,29 @@ int main(void) {
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
+        /* Player keybindings */
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            // move the player left
+            trans = glm::translate(trans, glm::vec3(-PLAYER_SPEED, 0.0F, 0.0F));
+        } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            // move the player right
+            trans = glm::translate(trans, glm::vec3(PLAYER_SPEED, 0.0F, 0.0F));
+        } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            // move the player up
+            trans = glm::translate(trans, glm::vec3(0.0F, PLAYER_SPEED, 0.0F));
+        } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            // move the player down
+            trans = glm::translate(trans, glm::vec3(0.0F, -PLAYER_SPEED, 0.0F));
+        }
 
-        glViewport(coord->x, coord->y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        PlayerBoundaries(coord);
+        // Get the vector coordinates of the player after a transformation
+        // matrix
+        glm::vec4 vec = trans * ori_vec;
+        PlayerBoundaries(vec, &trans);
+
+        // Pass the transformation matrix to the shader
+        GLint transform_loc = glGetUniformLocation(shader_program, "transform");
+        glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(trans));
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
@@ -224,7 +238,7 @@ int main(void) {
 }
 
 bool GetShaderCode(const char *shader_file_path, std::string *shader_source) {
-    /* Get shader source code from a file as a string */
+    /* Get the shader source code (GLSL) from a file as a string */
     std::ifstream read_shader_file(shader_file_path);
 
     if (!read_shader_file.is_open()) {
@@ -251,50 +265,31 @@ bool GetShaderCode(const char *shader_file_path, std::string *shader_source) {
 
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action,
                  int mods) {
+    /* Keyboard input for the GLFW window */
     // when a user presses the escape key, we set the WindowShouldClose property
     // to true, closing the application
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-
-    Coord *coord = (Coord *)glfwGetWindowUserPointer(window);
-
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        // move the player left
-        coord->x -= PLAYER_SPEED;
-    } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        // move the player right
-        coord->x += PLAYER_SPEED;
-    } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        // move the player up
-        coord->y += PLAYER_SPEED;
-    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        // move the player down
-        coord->y -= PLAYER_SPEED;
-    }
-    if (action == GLFW_PRESS) {
-    } else if (action == GLFW_RELEASE) {
-    }
-
-    glfwSetWindowUserPointer(window, coord);
 }
 
-void PlayerBoundaries(Coord *coord) {
-    /* Player boundaries */
-    if (coord->x < -290) {
+void PlayerBoundaries(glm::vec4 vec, glm::mat4 *trans) {
+    /* Player matrix boundaries */
+    const float width = IDENTITY_MATRIX / 10;
+    if (vec.x - width < -IDENTITY_MATRIX) {
         // left boundary
-        coord->x += PLAYER_SPEED;
+        *trans = glm::translate(*trans, glm::vec3(PLAYER_SPEED, 0.0F, 0.0F));
     }
-    if (coord->x > 290) {
+    if (vec.x + width > IDENTITY_MATRIX) {
         // right boundary
-        coord->x -= PLAYER_SPEED;
+        *trans = glm::translate(*trans, glm::vec3(-PLAYER_SPEED, 0.0F, 0.0F));
     }
-    if (coord->y < -290) {
+    if (vec.y - width < -IDENTITY_MATRIX) {
         // bottom boundary
-        coord->y += PLAYER_SPEED;
+        *trans = glm::translate(*trans, glm::vec3(0.0F, PLAYER_SPEED, 0.0F));
     }
-    if (coord->y > 290) {
+    if (vec.y + width > IDENTITY_MATRIX) {
         // top boundary
-        coord->y -= PLAYER_SPEED;
+        *trans = glm::translate(*trans, glm::vec3(0.0F, -PLAYER_SPEED, 0.0F));
     }
 }
