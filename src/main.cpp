@@ -6,8 +6,9 @@
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "audio/audio.hpp"
 #include <stb/stb_image.h>
+
+#include "audio/audio.hpp"
 
 // Window Size
 constexpr unsigned int WINDOW_WIDTH = 640;
