@@ -19,6 +19,8 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC include)
+
 target_link_libraries(${PROJECT_NAME} -lglfw -lGLEW -lGLU -lGL -lSDL2 -lSDL2_mixer)
 
 target_precompile_headers(${PROJECT_NAME} PRIVATE src/pch/opengl_2d_game-pch.hpp)

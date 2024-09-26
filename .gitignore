@@ -4,7 +4,6 @@ build/
 *.kdev4
 files/
 *.xcf
-*.png
 
 # Music files
 *.aup3
