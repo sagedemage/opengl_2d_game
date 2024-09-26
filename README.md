@@ -52,6 +52,12 @@ Install clang-tidy
 sudo apt install clang-tidy
 ```
 
+## stb_image.h by Sean Barrett
+I included the [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h) header file to load a texture image file for the object.
+Thanks to [Sean Barrett](https://github.com/nothings) for allowing me to use this header file for this project.
+
+The stb_image.h header file comes from the [stb](https://github.com/nothings/stb/tree/master) repo.
+
 ## Useful Resources
 - [LearnOpenGL](https://learnopengl.com/)
   - [Hello Triangle](https://learnopengl.com/Getting-started/Hello-Triangle)
