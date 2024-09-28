@@ -28,6 +28,12 @@ sudo apt install libsdl2-dev libsdl2-mixer-dev
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON . -B build
 ```
 
+## Download stb_image.h header file
+Download the stb_image.h header file from [stb](https://github.com/nothings/stb) repo.
+```
+wget https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h -P include/stb/
+```
+
 ## Test OpenGL Works
 Write simple OpenGL code to draw a triangle to test that OpenGL works.
 ```
