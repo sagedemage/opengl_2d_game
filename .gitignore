@@ -8,10 +8,11 @@ files/
 # Music files
 *.aup3
 *.mscz
+*.kra
 
 # Cache files
 .mscbackup
-~*.*
+*.*~
 *.kate-swp
 .cache/
 
