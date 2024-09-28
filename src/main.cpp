@@ -29,7 +29,7 @@ int main(void) {
     const char *fragment_shader_path = "shader/shader.frag";
 
     // Texture image file path
-    const char *texture_image_file = "textures/container.jpg";
+    const std::string texture_image_file = "textures/crate.png";
 
     /* Shader Source Code (GLSL code) */
     std::string vertex_shader_s;
@@ -150,11 +150,25 @@ int main(void) {
     int height = 0;
     int nr_channels = 0;
     unsigned char *data =
-        stbi_load(texture_image_file, &width, &height, &nr_channels, 0);
+        stbi_load(texture_image_file.c_str(), &width, &height, &nr_channels, 0);
 
     if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, data);
+        const std::string file_ext =
+            texture_image_file.substr(texture_image_file.size() - 4, 4);
+
+        if (file_ext.compare(".png") == 0) {
+            // Specify 2D texture image for a PNG file
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, data);
+        } else if (file_ext.compare(".jpg") == 0) {
+            //  Specify 2D texture image for a JPG file
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                         GL_UNSIGNED_BYTE, data);
+        } else {
+            std::cerr << "Image file type not supported for: "
+                      << texture_image_file << std::endl;
+        }
+
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
         std::cerr << "Failed to load texture: " << texture_image_file
