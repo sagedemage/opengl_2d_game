@@ -20,7 +20,7 @@ sudo apt install libglew-dev
 sudo apt install libsdl2-dev libsdl2-mixer-dev
 ```
 
-### Download stb_image.h header file
+### Update stb_image.h header file (Optional)
 Download the stb_image.h header file from [stb](https://github.com/nothings/stb) repo.
 ```
 wget https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h -P include/stb/
