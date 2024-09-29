@@ -156,11 +156,11 @@ int main(void) {
         const std::string file_ext =
             texture_image_file.substr(texture_image_file.size() - 4, 4);
 
-        if (file_ext.compare(".png") == 0) {
+        if (file_ext == ".png") {
             // Specify 2D texture image for a PNG file
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                          GL_UNSIGNED_BYTE, data);
-        } else if (file_ext.compare(".jpg") == 0) {
+        } else if (file_ext == ".jpg") {
             //  Specify 2D texture image for a JPG file
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                          GL_UNSIGNED_BYTE, data);
