@@ -184,12 +184,12 @@ int main(void) {
     std::array<float, 48> vertices = {
         // positions        // colors         // texture
         -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F,  // upper-left corner
-        0.1F,  -0.1F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 0.0F,  // lower-right corner
-        0.1F,  0.1F,  0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F,  // upper-right corner
+        0.1F,  -0.1F, 0.0F, 0.3F, 0.3F, 0.3F, 1.0F, 0.0F,  // lower-right corner
+        0.1F,  0.1F,  0.0F, 1.0F, 1.0F, 0.0F, 1.0F, 1.0F,  // upper-right corner
 
         -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F,  // upper-left corner
-        0.1F,  -0.1F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 0.0F,  // lower-right corner
-        -0.1F, -0.1F, 0.0F, 1.0F, 0.0F, 1.0F, 0.0F, 0.0F,  // lower-left corner
+        0.1F,  -0.1F, 0.0F, 0.3F, 0.3F, 0.3F, 1.0F, 0.0F,  // lower-right corner
+        -0.1F, -0.1F, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F,  // lower-left corner
     };
 
     unsigned int vbo = 0;
