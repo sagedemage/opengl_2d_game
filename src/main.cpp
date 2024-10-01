@@ -29,7 +29,7 @@ int main(void) {
     const char *fragment_shader_path = "shader/shader.frag";
 
     // Texture image file path
-    const std::string texture_image_file = "textures/crate.png";
+    const std::string texture_image_file = "assets/textures/crate.png";
 
     /* Shader Source Code (GLSL code) */
     std::string vertex_shader_s;
@@ -51,7 +51,7 @@ int main(void) {
     /*const int music_volume = 64;
     const int channels = 2;
     const int chunksize = 1024;
-    const char *music_path = "music/square.ogg";*/
+    const char *music_path = "assets/music/square.ogg";*/
 
     // Initialize GLFW
     if (!glfwInit()) {

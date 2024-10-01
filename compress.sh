@@ -1,2 +1,2 @@
 #!/bin/sh
-tar -czf music.tar.gz music
+tar -czf assets.tar.gz assets
