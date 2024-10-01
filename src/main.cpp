@@ -5,6 +5,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 #include "audio/audio.hpp"
 
 // Window Size
@@ -24,6 +27,9 @@ int main(void) {
     /* Shader File Path */
     const char *vertex_shader_path = "shader/shader.vert";
     const char *fragment_shader_path = "shader/shader.frag";
+
+    // Texture image file path
+    const std::string texture_image_file = "assets/textures/crate.png";
 
     /* Shader Source Code (GLSL code) */
     std::string vertex_shader_s;
@@ -45,7 +51,7 @@ int main(void) {
     /*const int music_volume = 64;
     const int channels = 2;
     const int chunksize = 1024;
-    const char *music_path = "music/square.ogg";*/
+    const char *music_path = "assets/music/square.ogg";*/
 
     // Initialize GLFW
     if (!glfwInit()) {
@@ -127,20 +133,63 @@ int main(void) {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
+    /* Generate a texture */
+    unsigned int texture = 0;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // set the texture wrapping and filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // load and generate the texture
+    int width = 0;
+    int height = 0;
+    int nr_channels = 0;
+    unsigned char *data =
+        stbi_load(texture_image_file.c_str(), &width, &height, &nr_channels, 0);
+
+    if (data) {
+        const std::string file_ext =
+            texture_image_file.substr(texture_image_file.size() - 4, 4);
+
+        if (file_ext == ".png") {
+            // Specify 2D texture image for a PNG file
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, data);
+        } else if (file_ext == ".jpg") {
+            //  Specify 2D texture image for a JPG file
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+                         GL_UNSIGNED_BYTE, data);
+        } else {
+            std::cerr << "Image file type not supported for: "
+                      << texture_image_file << std::endl;
+        }
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cerr << "Failed to load texture: " << texture_image_file
+                  << std::endl;
+    }
+    stbi_image_free(data);
+
     /*
      * setup vertex data and buffers
      * configure vertex attributes
      */
 
-    std::array<float, 36> vertices = {
-        // positions        // colors
-        -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F,  // left
-        0.1F,  -0.1F, 0.0F, 1.0F, 0.0F, 0.0F,  // right
-        0.1F,  0.1F,  0.0F, 1.0F, 0.0F, 1.0F,  // top
+    std::array<float, 48> vertices = {
+        // positions        // colors         // texture
+        -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F,  // upper-left corner
+        0.1F,  -0.1F, 0.0F, 0.3F, 0.3F, 0.3F, 1.0F, 0.0F,  // lower-right corner
+        0.1F,  0.1F,  0.0F, 1.0F, 1.0F, 0.0F, 1.0F, 1.0F,  // upper-right corner
 
-        -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F,  // left
-        0.1F,  -0.1F, 0.0F, 1.0F, 0.0F, 0.0F,  // right
-        -0.1F, -0.1F, 0.0F, 1.0F, 0.0F, 1.0F,  // top
+        -0.1F, 0.1F,  0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F,  // upper-left corner
+        0.1F,  -0.1F, 0.0F, 0.3F, 0.3F, 0.3F, 1.0F, 0.0F,  // lower-right corner
+        -0.1F, -0.1F, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F,  // lower-left corner
     };
 
     unsigned int vbo = 0;
@@ -154,14 +203,19 @@ int main(void) {
                  GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *)0);
     glEnableVertexAttribArray(0);
 
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // texture attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glUseProgram(shader_program);
 
@@ -189,6 +243,7 @@ int main(void) {
 
         // Draw a triangle
         glUseProgram(shader_program);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

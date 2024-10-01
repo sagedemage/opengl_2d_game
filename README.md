@@ -20,6 +20,12 @@ sudo apt install libglew-dev
 sudo apt install libsdl2-dev libsdl2-mixer-dev
 ```
 
+### Update stb_image.h header file (Optional)
+Download the stb_image.h header file from [stb](https://github.com/nothings/stb) repo.
+```
+wget https://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h -P include/stb/
+```
+
 ## Setup Build Directory
 * Setup a build directory to compile and run the program
 * Setup a compile database to lint the project
@@ -52,9 +58,16 @@ Install clang-tidy
 sudo apt install clang-tidy
 ```
 
+## stb_image.h by Sean Barrett
+I included the [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h) header file to load a texture image file for the object.
+Thanks to [Sean Barrett](https://github.com/nothings) for making this header file publicly available for anyone to use.
+
+The stb_image.h header file comes from the [stb](https://github.com/nothings/stb/tree/master) repo.
+
 ## Useful Resources
 - [LearnOpenGL](https://learnopengl.com/)
   - [Hello Triangle](https://learnopengl.com/Getting-started/Hello-Triangle)
+  - [Textures](https://learnopengl.com/Getting-started/Textures)
   - [Transformations](https://learnopengl.com/Getting-started/Transformations)
   - [2D Game - Setting up](https://learnopengl.com/In-Practice/2D-Game/Setting-up)
 - [clang-tidy documentation](https://clang.llvm.org/extra/clang-tidy/)

@@ -10,14 +10,15 @@ set(WARNING_FLAGS "-Werror -Wpedantic -Wall")
 set(DEBUG_FLAGS "-g -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${STANDARD_CXX_VERSION_FLAG} ${OPTIMIZE_FLAG} ${WARNING_FLAGS} ${DEBUG_FLAGS}")
 
-file(COPY music DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY shader DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY textures DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY lint_codebase.sh DESTINATION ${CMAKE_BINARY_DIR})
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC include)
 
 target_link_libraries(${PROJECT_NAME} -lglfw -lGLEW -lGLU -lGL -lSDL2 -lSDL2_mixer)
 

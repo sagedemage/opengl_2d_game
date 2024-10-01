@@ -4,14 +4,15 @@ build/
 *.kdev4
 files/
 *.xcf
-*.png
 
 # Music files
 *.aup3
 *.mscz
+*.kra
 
 # Cache files
 .mscbackup
-~*.*
+*.*~
 *.kate-swp
 .cache/
+
