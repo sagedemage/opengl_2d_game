@@ -48,10 +48,10 @@ int main(void) {
     const char *fragment_shader_source = fragment_shader_s.c_str();
 
     /* SDL_mixer */
-    const int music_volume = 64;
+    const int music_volume = MIX_MAX_VOLUME/3;
     const int channels = 2;
     const int chunksize = 1024;
-    const char *music_path = "assets/music/square.ogg";
+    const char *music_path = "assets/music/wind.ogg";
 
     // Initialize GLFW
     if (!glfwInit()) {
