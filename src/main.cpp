@@ -48,10 +48,10 @@ int main(void) {
     const char *fragment_shader_source = fragment_shader_s.c_str();
 
     /* SDL_mixer */
-    /*const int music_volume = 64;
+    const int music_volume = 64;
     const int channels = 2;
     const int chunksize = 1024;
-    const char *music_path = "assets/music/square.ogg";*/
+    const char *music_path = "assets/music/square.ogg";
 
     // Initialize GLFW
     if (!glfwInit()) {
@@ -224,13 +224,13 @@ int main(void) {
      */
 
     // Open audio using SDL_mixer
-    /*Audio audio(channels, chunksize);
+    Audio audio(channels, chunksize);
 
     // Load and play music
     audio.LoadMusic(music_path);
     audio.PlayMusic();
 
-    Audio::ChangeVolume(music_volume);*/
+    Audio::ChangeVolume(music_volume);
 
     glm::vec4 ori_vec(0.0F, 0.0F, 0.0F, 1.0F);
     glm::mat4 trans = glm::mat4(IDENTITY_MATRIX);
